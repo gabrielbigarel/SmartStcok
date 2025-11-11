@@ -1,30 +1,29 @@
 # 🧠 SmartStock
 **Sistema Inteligente de Controle de Estoque e Previsão de Vendas**
 
----
+
 
 ## 👨‍💻 Equipe do Projeto
-**Aluno:** Gabriel Brito Oliveira  
+**Aluno:** Gabriel Brito 
 **Turma:** 28 - VM  
-**Campus:** Vila Maria  
 **Função:** Desenvolvedor e Gerente do Projeto  
 
 **Orientador:** Prof. Dr. Edson Melo de Souza  
 
----
+
 
 ## 🧩 Justificativa
 Este projeto foi desenvolvido diante da necessidade de otimizar processos administrativos em empresas de médio porte, promovendo maior eficiência operacional por meio de soluções tecnológicas inovadoras.  
 Além disso, busca-se atender à demanda social por modelos que reduzam desperdícios e aumentem a sustentabilidade organizacional, em alinhamento com os **Objetivos de Desenvolvimento Sustentável (ODS)** da ONU.
 
----
+
 
 ## 🎯 Objetivo
 Desenvolver um **sistema web de cadastro de produtos com previsão de demanda**, que permita gerenciar estoque, registrar histórico de vendas e prever futuras necessidades de reposição utilizando **algoritmos de regressão linear simples**.
 
 O objetivo principal é auxiliar gestores na **tomada de decisões estratégicas**, equilibrando oferta e demanda e reduzindo custos com excesso ou falta de produtos em estoque.
 
----
+
 
 ## 📦 Escopo
 
@@ -40,7 +39,7 @@ O objetivo principal é auxiliar gestores na **tomada de decisões estratégicas
 - Integração com sistemas ERP;  
 - Modelos avançados de previsão (como deep learning).
 
----
+
 
 ## ⚙️ Metodologia
 O desenvolvimento seguiu uma abordagem **ágil**, dividida em cinco etapas principais:
@@ -57,7 +56,7 @@ O desenvolvimento seguiu uma abordagem **ágil**, dividida em cinco etapas princ
 - Versionamento: GitHub  
 - Metodologia: Scrum simplificado  
 
----
+
 
 ## 🚀 Resultados Esperados
 O sistema deverá permitir:
@@ -68,7 +67,7 @@ O sistema deverá permitir:
 
 O projeto serve também como base de aprendizado em **desenvolvimento front-end** e **lógica de programação aplicada**.
 
----
+
 
 ## 🗓️ Cronograma
 | Etapa | Descrição | Mês |
@@ -79,7 +78,7 @@ O projeto serve também como base de aprendizado em **desenvolvimento front-end*
 | 4 | Testes e ajustes | 4 |
 | 5 | Apresentação e documentação final | 5 |
 
----
+
 
 ## 🧰 Recursos Necessários
 - 1 desenvolvedor (Gabriel Brito Oliveira)  
@@ -96,9 +95,8 @@ Não utiliza backend ou banco de dados real — apenas simulação local via Jav
 ---
 
 ## 🔗 Links Importantes
-- 🎥 **Vídeo de apresentação:** [adicione o link do vídeo aqui]  
-- 🌐 **Aplicação online:** [adicione o link se estiver hospedada (ex: Netlify ou Vercel)]  
-- 💾 **Repositório GitHub:** [adicione o link do próprio repositório aqui]  
+- 🎥 **Vídeo de apresentação:** 
+- 💾 **Repositório GitHub:** 
 
 ---
 
