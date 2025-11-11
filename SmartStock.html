@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStock - Gestão de Estoque Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+           
+            --primary-color: #004aad; 
+            --secondary-color: #7b61ff; 
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --shadow-light: rgba(0,0,0,0.1);
+            --shadow-hover: rgba(0,0,0,0.2);
+            --border-color: #ddd;
+        }
+
+        body.dark {
+            
+            --primary-color: #90caf9; 
+            --secondary-color: #bb86fc; 
+            --background-color: #121212;
+            --card-background: #1e1e2a;
+            --text-color: #e0e0e0;
+            --shadow-light: rgba(255,255,255,0.05);
+            --shadow-hover: rgba(255,255,255,0.15);
+            --border-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+
+        header.topbar {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+     
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background: var(--card-background);
+            box-shadow: 0 2px 10px var(--shadow-light);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            flex-wrap: wrap; 
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            opacity: 1;
+            color: var(--secondary-color);
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 3px;
+            background: var(--secondary-color);
+            transition: 0.3s;
+            transform: translateX(-50%);
+        }
+
+        .tab.active {
+            color: var(--secondary-color);
+            opacity: 1;
+        }
+
+        .tab.active::after {
+            width: 100%;
+        }
+
+      
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .panel {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+
+
+        .produtos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 1.5rem;
+        }
+
+
+        .prod-card, .card {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+            opacity: 0;
+            animation: fadeSlideUp 0.6s forwards;
+            animation-delay: var(--delay, 0s);
+        }
+        
+
+        .produtos-grid > div:nth-child(1) { --delay: 0.1s; }
+        .produtos-grid > div:nth-child(2) { --delay: 0.2s; }
+        .produtos-grid > div:nth-child(3) { --delay: 0.3s; }
+        /* ... e assim por diante se necessário */
+
+        .prod-card:hover, .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--shadow-hover);
+        }
+
+        .prod-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 5px var(--shadow-light);
+        }
+
+        .prod-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+     
+        .card-actions {
+            display: flex;
+            justify-content: flex-start; 
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+       
+        .btn {
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            text-transform: uppercase;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn.primary:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn.secondary {
+            background: var(--border-color);
+            color: var(--text-color);
+        }
+        .btn.secondary:hover {
+            background: #aaa;
+        }
+
+        .btn.danger {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn.icon-btn {
+            background: none;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            color: white;
+            text-shadow: 0 0 5px var(--shadow-light);
+        }
+
+      
+        form label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        form input, form textarea, form select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.4rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            background: var(--background-color);
+            color: var(--text-color);
+        }
+
+        form input:focus, form textarea:focus, form select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 8px rgba(123,97,255,0.4);
+        }
+
+        form button {
+            margin-top: 0.5rem;
+            margin-right: 1rem;
+        }
+
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            padding: 1rem;
+        }
+        .table {
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0.8rem;
+            text-align: left;
+        }
+
+        .table th {
+            background: rgba(123,97,255,0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table tr:hover {
+            background: rgba(123,97,255,0.05);
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            margin-top: 3rem;
+            box-shadow: 0 -4px 15px var(--shadow-light);
+        }
+        
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            .header-content p {
+                margin: 0.5rem 0 1rem 0;
+            }
+            .navbar {
+                justify-content: space-around;
+            }
+            .tab {
+                padding: 1rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            main {
+                padding: 1rem 0.5rem;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+    <header class="topbar">
+  <div class="header-content">
+    <div class="logo-area">
+      <div class="header-text">
+        <h1>SmartStock</h1>
+        <p>Sistema de Gestão de Estoque Inteligente</p>
+      </div>
+    </div>
+    <button id="themeToggle" class="btn icon-btn" aria-label="Alternar Tema">🌞</button>
+  </div>
+</header>
+
+
+    <nav class="navbar">
+        <button class="tab active" data-target="produtos">📦 Produtos</button>
+        <button class="tab" data-target="novo">➕ Novo Produto</button>
+        <button class="tab" data-target="vendas">💰 Registrar Venda</button>
+        <button class="tab" data-target="historico">📜 Histórico</button>
+        <button class="tab" data-target="previsao">📈 Previsão</button>
+    </nav>
+
+    <main>
+        <section id="produtos" class="panel active">
+            <h2>📦 Produtos Cadastrados</h2>
+            <div id="prodList" class="produtos-grid"></div>
+        </section>
+
+        <section id="novo" class="panel">
+            <h2>➕ Cadastro/Edição de Produto</h2>
+            <form id="prodForm">
+                <input type="hidden" name="id">
+                <label>SKU: <input name="sku" required></label>
+                <label>Nome: <input name="name" required></label>
+                <label>URL da Imagem: <input name="imgUrl" placeholder="Ex: https://via.placeholder.com/150 (opcional)"></label>
+                <label>Preço (R$): <input name="price" type="number" step="0.01" required></label>
+                <label>Estoque: <input name="stock" type="number" required></label>
+                <label>Descrição: <textarea name="description"></textarea></label>
+                <button type="submit" class="btn primary">💾 Salvar Produto</button>
+                <button type="reset" class="btn secondary">🧹 Limpar</button>
+            </form>
+        </section>
+
+        <section id="vendas" class="panel">
+            <h2>💰 Registrar Nova Venda</h2>
+            <form id="saleForm">
+                <label>Produto: <select id="saleProduct" required></select></label>
+                <label>Data: <input id="saleDate" type="date" required></label>
+                <label>Quantidade: <input id="saleQty" type="number" min="1" required></label>
+                <label>Preço unitário (R$): <input id="salePrice" type="number" step="0.01" required></label>
+                <button type="submit" class="btn primary">✔️ Registrar Venda</button>
+            </form>
+        </section>
+
+        <section id="historico" class="panel">
+            <h2>📜 Histórico de Vendas</h2>
+            <div class="table-container">
+                <table class="table" id="salesTable">
+                    <thead><tr><th>Produto</th><th>Data</th><th>Qtd</th><th>Valor Total</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="previsao" class="panel">
+            <h2>📈 Previsão de Demanda (Regressão Linear)</h2>
+            <form id="forecastForm">
+                <label>Produto: <select id="forecastProduct"></select></label>
+                <label>Dias Futuros: <input id="horizon" type="number" value="7" min="1"></label>
+                <button id="runForecast" type="submit" class="btn primary">📊 Calcular Previsão</button>
+            </form>
+            <div id="forecastResult" class="card hidden">
+                <h3>Resultado da Previsão</h3>
+                <div class="table-container">
+                    <table class="table" id="forecastTable">
+                        <thead><tr><th>Data</th><th>Previsto (Qtd)</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <p id="forecastMetrics"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <small>© 2025 Gabriel Brito Oliveira — SmartStock | Interface Moderna, Intuitiva e Funcional</small>
+    </footer>
+
+    <script>
+ 
+        const STORAGE_KEYS = {
+            PRODUCTS: 'ss_products',
+            SALES: 'ss_sales',
+            THEME: 'ss_theme' 
+        };
+        const loadProducts = () => JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+        const saveProducts = d => localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(d));
+        const loadSales = () => JSON.parse(localStorage.getItem(STORAGE_KEYS.SALES) || '[]');
+        const saveSales = d => localStorage.setItem(STORAGE_KEYS.SALES, JSON.stringify(d));
+
+    
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.innerHTML = '🌙';
+            } else {
+                body.classList.remove('dark');
+                themeToggle.innerHTML = '🌞';
+            }
+            localStorage.setItem(STORAGE_KEYS.THEME, theme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.classList.contains('dark') ? 'light' : 'dark';
+            applyTheme(currentTheme);
+        });
+
+    
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+        applyTheme(savedTheme);
+
+
+       
+        document.querySelectorAll('.tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+              
+                document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                
+                
+                btn.classList.add('active');
+                
+             
+                const targetPanel = document.getElementById(btn.dataset.target);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+                refresh();
+            });
+        });
+
+       
+        const prodGrid = document.getElementById('prodList');
+        function renderProducts() {
+            const prods = loadProducts();
+            prodGrid.innerHTML = '';
+            if (prods.length === 0) {
+                prodGrid.innerHTML = '<p class="card" style="grid-column: 1 / -1; text-align: center;">Nenhum produto cadastrado. Adicione um novo!</p>';
+                return;
+            }
+            prods.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'prod-card';
+                card.innerHTML = `
+                    <img src="${p.img || 'https://via.placeholder.com/250/7b61ff/ffffff?text=Sem+Imagem'}" alt="${p.name}">
+                    <h3>${p.name} <small>(${p.sku})</small></h3>
+                    <p>${p.description || 'Sem descrição.'}</p>
+                    <p><strong>R$ ${p.price.toFixed(2)}</strong> | Estoque: ${p.stock}</p>
+                    <div class="card-actions">
+                        <button class="btn small primary edit" data-id="${p.id}">✏️ Editar</button>
+                        <button class="btn small danger del" data-id="${p.id}">🗑️ Excluir</button>
+                    </div>`;
+                prodGrid.appendChild(card);
+            });
+        }
+
+        document.getElementById('prodForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const f = e.target;
+            const id = f.id.value || 'p_' + Date.now();
+            const prods = loadProducts();
+            const idx = prods.findIndex(p => p.id === id);
+            
+            const newP = {
+                id,
+                sku: f.sku.value,
+                name: f.name.value,
+                price: parseFloat(f.price.value),
+                stock: parseInt(f.stock.value),
+                description: f.description.value,
+                
+                img: f.imgUrl.value || 'https://via.placeholder.com/250/7b61ff/ffffff?text=Sem+Imagem' 
+            };
+            
+            if (idx >= 0) prods[idx] = newP;
+            else prods.push(newP);
+            
+            saveProducts(prods);
+            f.reset();
+            f.querySelector('button[type="submit"]').textContent = '💾 Salvar Produto';
+            alert('Produto salvo!');
+            renderProducts();
+            document.querySelector('[data-target="produtos"]').click(); 
+        });
+
+        prodGrid.addEventListener('click', e => {
+            const id = e.target.dataset.id;
+            if (e.target.classList.contains('del')) {
+                if (!confirm('Tem certeza que deseja excluir este produto?')) return;
+                let prods = loadProducts().filter(p => p.id !== id);
+                saveProducts(prods);
+                renderProducts();
+            } else if (e.target.classList.contains('edit')) {
+                const p = loadProducts().find(x => x.id === id);
+                if (!p) return;
+                const f = document.getElementById('prodForm');
+                
+              
+                f.id.value = p.id;
+                f.sku.value = p.sku;
+                f.name.value = p.name;
+                f.price.value = p.price;
+                f.stock.value = p.stock;
+                f.description.value = p.description;
+                
+               
+                if(f.imgUrl) f.imgUrl.value = p.img || ''; 
+
+                f.querySelector('button[type="submit"]').textContent = 'Atualizar Produto'; 
+                document.querySelector('[data-target="novo"]').click(); 
+            }
+        });
+
+        
+        function populateSelects() {
+            const prods = loadProducts();
+           
+            const opts = prods.map(p => `<option value="${p.id}">${p.name} (Estoque: ${p.stock})</option>`).join('');
+            document.getElementById('saleProduct').innerHTML = opts;
+            document.getElementById('forecastProduct').innerHTML = `<option value="">Selecione um Produto</option>` + opts;
+        }
+
+        document.getElementById('saleForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const f = e.target;
+            const pid = f.saleProduct.value,
+                qty = parseInt(f.saleQty.value);
+            const price = parseFloat(f.salePrice.value),
+                date = f.saleDate.value;
+            const sales = loadSales();
+            const prods = loadProducts();
+            const prod = prods.find(p => p.id === pid);
+
+            if (!prod) return alert('Produto não encontrado.');
+            if (prod.stock < qty) return alert(`Estoque insuficiente! Apenas ${prod.stock} em estoque.`);
+
+      
+            prod.stock -= qty;
+            saveProducts(prods);
+
+         
+            sales.push({
+                id: 's_' + Date.now(),
+                productId: pid,
+                date,
+                quantity: qty,
+                unitPrice: price
+            });
+            saveSales(sales);
+            f.reset();
+            alert(`Venda de ${qty}x ${prod.name} registrada com sucesso!`);
+            renderSales();
+            renderProducts(); 
+            populateSelects(); 
+        });
+
+
+        function renderSales() {
+            const tbody = document.querySelector('#salesTable tbody');
+            const sales = loadSales().sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar do mais recente
+            const prods = loadProducts();
+            tbody.innerHTML = '';
+
+            if (sales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhuma venda registrada ainda.</td></tr>';
+                return;
+            }
+
+            sales.forEach(s => {
+                const p = prods.find(x => x.id === s.productId);
+                const tr = document.createElement('tr');
+                const total = s.unitPrice * s.quantity;
+                tr.innerHTML = `
+                    <td>${p?.name || 'Produto Excluído'}</td>
+                    <td>${s.date}</td>
+                    <td>${s.quantity}</td>
+                    <td>R$ ${total.toFixed(2)}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        const horizonInput = document.getElementById('horizon');
+        const forecastResult = document.getElementById('forecastResult');
+
+        function toOrdinal(d) {
+            return new Date(d).setHours(0, 0, 0, 0) / 86400000;
+        }
+
+        function regress(xs, ys) {
+            const n = xs.length;
+            if (n < 2) return null;
+            const meanX = xs.reduce((a, b) => a + b, 0) / n,
+                meanY = ys.reduce((a, b) => a + b, 0) / n;
+            let num = 0,
+                den = 0;
+            for (let i = 0; i < n; i++) {
+                num += (xs[i] - meanX) * (ys[i] - meanY);
+                den += (xs[i] - meanX) ** 2;
+            }
+            if (den === 0) return null; 
+            const slope = num / den,
+                intercept = meanY - slope * meanX;
+            return {
+                slope,
+                intercept
+            };
+        }
+
+        document.getElementById('forecastForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pid = forecastProduct.value;
+            const horizon = parseInt(horizonInput.value || 7);
+
+            if (!pid) return alert('Selecione um produto para calcular a previsão.');
+
+            const sales = loadSales().filter(s => s.productId === pid);
+            if (sales.length < 2) {
+                forecastResult.classList.add('hidden');
+                return alert('São necessários pelo menos 2 registros de vendas para este produto para calcular a previsão.');
+            }
+
+            
+            const grouped = {};
+            sales.forEach(s => grouped[s.date] = (grouped[s.date] || 0) + s.quantity);
+
+            const dates = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
+            const xs = dates.map(toOrdinal),
+                ys = dates.map(d => grouped[d]);
+
+            const regression = regress(xs, ys);
+            if (!regression) {
+                forecastResult.classList.add('hidden');
+                return alert('Não foi possível calcular a regressão. Verifique os dados de vendas.');
+            }
+
+            const { slope, intercept } = regression;
+
+            
+            const fut = [];
+            const last = new Date(dates.at(-1));
+            for (let i = 1; i <= horizon; i++) {
+                const d = new Date(last);
+                d.setDate(d.getDate() + i);
+                fut.push(d.toISOString().slice(0, 10));
+            }
+
+            const tbody = document.querySelector('#forecastTable tbody');
+            tbody.innerHTML = '';
+            fut.forEach(f => {
+                const x = toOrdinal(f);
+                let y = intercept + slope * x;
+                y = Math.max(0, y); 
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${f}</td><td>${y.toFixed(2)}</td>`;
+                tbody.appendChild(tr);
+            });
+
+      
+            document.getElementById('forecastMetrics').textContent = `Fórmula de Previsão: Qtd = ${slope.toFixed(4)} * (Dia Ordinal) + ${intercept.toFixed(4)}`;
+            forecastResult.classList.remove('hidden');
+        });
+
+
+        function refresh() {
+            renderProducts();
+            populateSelects();
+            renderSales();
+        }
+
+       (function init() {
+    const sampleProducts = [
+        {
+            id: 'p1',
+            sku: 'MULTI9',
+            name: 'Multimídia 9"',
+            price: 799.9,
+            stock: 12,
+            description: 'Central Android Auto e CarPlay de alta resolução.',
+            img: 'img/multi.png'
+        },
+        {
+            id: 'p2',
+            sku: 'FONE01',
+            name: 'Fone Bluetooth Pro',
+            price: 59.9,
+            stock: 30,
+            description: 'Som estéreo de qualidade com microfone embutido.',
+            img: 'img/fone.jpg'
+        },
+        {
+            id: 'p3',
+            sku: 'CARREG20W',
+            name: 'Carregador Turbo 20W',
+            price: 89.9,
+            stock: 25,
+            description: 'USB-C rápido, ideal para novos smartphones.',
+            img: 'img/carregador.png'
+        },
+        {
+            id: 'p4',
+            sku: 'MOUSEDX',
+            name: 'Mouse Óptico Sem Fio',
+            price: 45.0,
+            stock: 5,
+            description: 'Mouse ergonômico com bateria de longa duração.',
+            img: 'img/mouse.png'
+        }
+    ];
+
+    const sampleSales = [
+        { id: 's1', productId: 'p2', date: '2025-10-25', quantity: 2, unitPrice: 59.9 },
+        { id: 's2', productId: 'p3', date: '2025-10-28', quantity: 1, unitPrice: 89.9 },
+        { id: 's3', productId: 'p1', date: '2025-10-30', quantity: 3, unitPrice: 799.9 }
+    ];
+
+  
+    localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
+    localStorage.removeItem(STORAGE_KEYS.SALES);
+
+    saveProducts(sampleProducts);
+    saveSales(sampleSales);
+
+    refresh(); 
+})();
+
+    </script>
+</body>
+</html>
