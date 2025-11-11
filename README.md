@@ -96,7 +96,7 @@ Não utiliza backend ou banco de dados real — apenas simulação local via Jav
 
 ## 🔗 Links Importantes
 - 🎥 **Vídeo de apresentação:** 
-- 💾 **Repositório GitHub:** 
+- 💾 **Repositório GitHub:**  'https://github.com/gabrielbigarel/SmartStcok'
 
 ---
 
